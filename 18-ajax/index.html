@@ -2,9 +2,59 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>HTML demo</title>
 </head>
 <body>
+<input type="text" id="new-item" title="">
+<button id="add-btn">Add</button>
+<ul id="todo-list">
 
+</ul>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+    var storageKey = 'todoList';
+    var dataString = localStorage.getItem(storageKey);
+
+    var totoList;
+    if (dataString) {
+        totoList = JSON.parse(dataString);
+    } else {
+        totoList = [];
+    }
+
+    const url = 'http://localhost:3000/todo';
+
+    axios.get(url).then(res => {
+        var items = res.data;
+
+        console.log(items);
+    });
+
+    var addBtn = document.getElementById('add-btn');
+    addBtn.addEventListener('click', addItem);
+
+    function addItem() {
+        var input = document.getElementById('new-item');
+        var newItem = input.value;
+
+        totoList.push(newItem);
+
+        render();
+        input.value = '';
+        localStorage.setItem(storageKey, JSON.stringify(totoList));
+    }
+
+    function render() {
+        var htmlList = document.getElementById('todo-list');
+
+        var content = totoList.map(function (item) {
+            return '<li>' + item + '</li>';
+        });
+
+        htmlList.innerHTML = content.join('');
+    }
+
+    render();
+</script>
 </body>
 </html>
